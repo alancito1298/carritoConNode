@@ -21,7 +21,7 @@ function Productos() {
     // Cargar los productos desde el archivo JSON en la carpeta public
     const fetchProductos = async () => {
       try {
-        const response = await fetch('/Database/Stock.json');
+        const response = await fetch('/api/Stock');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

@@ -6,11 +6,11 @@ import PanelAgregarProducto from '@/panelAgregarProducto';
 function ProductosTabla() {
   const [productos, setProductos] = useState([]);
 
-  // Cargar los productos desde el archivo JSON
+  // Cargar los productos desde la API
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await fetch('/Database/Stock.json');
+        const response = await fetch('/api/products');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -25,12 +25,47 @@ function ProductosTabla() {
   }, []);
 
   // Función para agregar un nuevo producto
-  const handleAddProduct = (nuevoProducto) => {
+  const handleAddProduct = async (nuevoProducto) => {
     // Agregar el nuevo producto al estado local
     setProductos((prevProductos) => [...prevProductos, nuevoProducto]);
 
-    // Aquí podrías agregar la lógica para actualizar el archivo JSON en el servidor si fuera necesario
-    // Por ejemplo, hacer una petición POST a una API que guarde el producto en el JSON
+    // Lógica para enviar el nuevo producto a la API
+    try {
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(nuevoProducto),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al agregar el producto');
+      }
+
+      console.log('Producto agregado con éxito');
+    } catch (error) {
+      console.error('Error al enviar el producto:', error);
+    }
+  };
+
+  // Función para eliminar un producto
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`/api/products?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setProductos((prevProductos) =>
+          prevProductos.filter((producto) => producto.id !== id)
+        );
+      } else {
+        console.error('Error al eliminar el producto');
+      }
+    } catch (error) {
+      console.error('Error al eliminar el producto:', error);
+    }
   };
 
   return (
@@ -60,7 +95,7 @@ function ProductosTabla() {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <button className="bg-cyan-600 text-white px-4 py-2 rounded-md hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600">Act</button>
-                <button className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 ml-2">Eli</button>
+                <button onClick={() => handleDelete(producto.id)} className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 ml-2">Eli</button>
               </td>
             </tr>
           ))}

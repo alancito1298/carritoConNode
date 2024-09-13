@@ -4,26 +4,48 @@ import { useState } from 'react';
 const PanelAgregarProducto = ({ onAddProduct }) => {
   const [nombre, setNombre] = useState('');
   const [precio, setPrecio] = useState('');
-  const [detalle, setDetalle] = useState('');
+  //const [detalle, setDetalle] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Crear el nuevo producto
+  
+    // Valida que los campos no estén vacíos
+    if (!nombre || !precio) {
+      alert('Por favor, completa todos los campos.');
+      return;
+    }
+  
     const nuevoProducto = {
-      id: Date.now(),  // Generar un ID único temporalmente
+      id: Date.now(),  // Puedes generar un ID o manejarlo como prefieras
       nombre,
       precio: parseFloat(precio),
-      detalle,
     };
-
-    // Llamar a la función pasada por props para agregar el producto
-    onAddProduct(nuevoProducto);
-
-    // Limpiar los campos del formulario
-    setNombre('');
-    setPrecio('');
-    setDetalle('');
+  
+    try {
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(nuevoProducto),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error al agregar el producto');
+      }
+  
+      // Llama a la función para agregar el producto a la lista local
+      onAddProduct(nuevoProducto);
+  
+      // Limpia los campos después de enviar
+      setNombre('');
+      setPrecio('');
+    } catch (error) {
+      console.error('Error al enviar el producto:', error);
+      alert('Hubo un error al agregar el producto.');
+    }
   };
+  
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -33,8 +55,9 @@ const PanelAgregarProducto = ({ onAddProduct }) => {
           type="text"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="text-indigo-600 mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:text-blue-600 focus:border-indigo-500 sm:text-sm"
           required
+          
         />
       </div>
 
@@ -44,20 +67,23 @@ const PanelAgregarProducto = ({ onAddProduct }) => {
           type="number"
           value={precio}
           onChange={(e) => setPrecio(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="mt-1 block w-full px-3 py-2 border text-indigo-600 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           required
         />
       </div>
-
-      <div>
+ {/*
+          También podemos tener
+          comentarios multilínea
+     
+<div>
         <label className="block text-sm font-medium">detalle</label>
         <textarea
           value={detalle}
           onChange={(e) => setDetalle(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="mt-1 block w-full px-3 py-2 border text-indigo-600 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           required
         ></textarea>
-      </div>
+      </div> */}
 
       <button
         type="submit"

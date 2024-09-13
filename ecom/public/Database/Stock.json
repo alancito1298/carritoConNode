@@ -1,23 +1,26 @@
 {
-    "productos": [
-        {
-            "id": "1",
-         
-            "nombre": "Nombre del producto",
-            "color": "Color del producto",
-            "precio": "$100"
-            
-          },
-        { 
-            "id": 2, 
-            "nombre": "Producto 1", 
-            "precio": 10.00, 
-            "categoria":"categoria"
-            },
-            { 
-                "id": 3, 
-                "nombre": "Producto 1", 
-                "precio": 10.00, 
-                "categoria":"categoria"
-                }]
+  "productos": [
+    {
+      "id": 2,
+      "nombre": "Producto 1",
+      "precio": 10,
+      "categoria": "categoria"
+    },
+    {
+      "id": 3,
+      "nombre": "Producto 1",
+      "precio": 10,
+      "categoria": "categoria"
+    },
+    {
+      "id": 1726235522856,
+      "nombre": "646",
+      "precio": 63
+    },
+    {
+      "id": 1726235522856,
+      "nombre": "646",
+      "precio": 63
+    }
+  ]
 }
